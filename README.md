@@ -7,10 +7,11 @@
 
 ### To properly run this code, you will need a Fortran compiler and a working version of SNOWMODEL
 ### I use a MacBook Pro and a version of GFortran
+### https://gcc.gnu.org/wiki/GFortranBinariesMacOS
 
 ### Fortran gridded data is saved in a GrADS file
 ### I translante this data using R code from Marcos Longo
 
 ### This is my first draft of the readme file, I plan to expand more on the steps to run the program.
 
-### Mikey, September 27, 2019
+### Mikey, October 14, 2019
