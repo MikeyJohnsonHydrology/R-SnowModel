@@ -5,8 +5,7 @@
 ##### A Distributed Snow-Evolution Modeling System (SnowModel) https://doi.org/10.1175/JHM548.1
 
 #### To properly run this code, you will need a Fortran compiler and a working version of SNOWMODEL
-#### I use a MacBook Pro and a version of GFortran
-###### https://gcc.gnu.org/wiki/GFortranBinariesMacOS
+#### I use a MacBook Pro and GFortran https://gcc.gnu.org/wiki/GFortranBinariesMacOS
 
 #### Fortran gridded data is saved in a GrADS file
 #### I translante this data using R code from Marcos Longo
