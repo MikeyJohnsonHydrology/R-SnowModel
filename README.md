@@ -11,8 +11,8 @@
 ##### I translante this data using R code from Marcos Longo
 
 ##### I have posted two folders with this project that I use to test my script.
-###### - "snowmodel_test", this is Dr. Glen Liston's code for a demo run of SnowModel_16_05_09
-###### - "Singel Cell Test", this uses SnowModel_16_05_09 and simulates snow at the Hogg Pass SNOTEL for water year 2003 & 2004
+###### 1) "snowmodel_test", this is Dr. Glen Liston's code for a demo run of SnowModel_16_05_09
+###### 2) "Singel_Cell_Test", this uses SnowModel_16_05_09 and simulates snow at the Hogg Pass SNOTEL for water year 2003 & 2004
 
 ##### This is my early draft of the readme file, I plan to expand more on the steps to run the program.
 
