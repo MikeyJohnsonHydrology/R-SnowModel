@@ -8,7 +8,7 @@
 ##### I use a MacBook Pro and GFortran https://gcc.gnu.org/wiki/GFortranBinariesMacOS
 
 ##### Fortran gridded data is saved in a GrADS file
-##### I translante this data using R code from Marcos Longo
+##### I translante this data using R code from Marcos Longo https://github.com/mpaiao
 
 ##### I have posted two folders with this project that I use to test my script.
 ##### 1) "snowmodel_test", this is Dr. Glen Liston's code for a demo run of SnowModel_16_05_09
