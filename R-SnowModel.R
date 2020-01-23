@@ -1,8 +1,7 @@
 ##################################################################################################
 ### SnowModel Run Script
 ###
-### this script was developed to make a full SnowModel run and plot results
-### step will require you to set some varibles depending on how you want to run the model
+### This script was developed to make a full SnowModel run and plot results.
 ###
 ### Written by: Mikey Johnson, University of Nevada Reno, < mikeyj@nevada.unr.edu >
 ### last eddited 01-23-2020
@@ -10,25 +9,28 @@
 
 #### Loading packages ########################################################################
 #These must be already installed on your system 
-library(dplyr)      #data manipulation
-library(ggplot2)    #plotting
-library(plotly)     #interactive plotting
-library(cowplot)    #publication-ready plots
-library(devtools)   #developer tools, simplifying tasks
-library(lubridate)  # date time manipulation
+library(dplyr)      # data manipulation
+library(ggplot2)    # plotting
+library(plotly)     # interactive plotting
+library(cowplot)    # publication-ready plots
+library(devtools)   # developer tools, simplifying tasks
+#library(lubridate)  # date time manipulation
 
 #### Setting working directorys #############################################################
 # Setting the source file location
 sfl <- dirname(rstudioapi::getActiveDocumentContext()$path)  # this is the source file location of R-SnowModel.R
+
 
 # Working directory for demo runs of SnowModel
 # ** If you have these in the correct directory they should be good to run out of the box. **
 wd <- paste(sfl,"snowmodel_demo",sep="/")     # this file is the demo run of SnowModel
 #wd <- paste(sfl,"Singel_Cell_Test",sep="/")     # this file is a single cell test at Hogg Pass SNOTEL, https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=526
 
+
 # My curent working directory of the MRB SnowModel
 #wd <- "~/Desktop/MRB Project/SnowModel/Model Runs/McKenzie V6" # singel cell version for the MRB Project
 #wd <- "~/Desktop/McKenzie V7" # singel cell version for the MRB Project
+
 
 # Setting the working directory to the version of SnowModel to be run.
 setwd(wd)
@@ -137,6 +139,6 @@ ggplotly(ggplot()+
 
 
 #### Step 3b: selecting the data of intrest (MRB Slice) ##################################
-# swe slice of April 1
+# swe slice of April 1 day 183 assuming the model run starts on October 1st
 April.1 <- swed$swed[183,1,,]
 
