@@ -1,35 +1,36 @@
 ##################################################################################################
-### SnowModel Run Script, by Mikey Johnson, Univeristy of Nevada Reno, < mikeyj@nevada.unr.edu >
-### this script was developed to make a full SnowModel run
+### SnowModel Run Script
+###
+### this script was developed to make a full SnowModel run and plot results
 ### step will require you to set some varibles depending on how you want to run the model
 ###
-### last eddited 11-09-2019
+### Written by: Mikey Johnson, University of Nevada Reno, < mikeyj@nevada.unr.edu >
+### last eddited 01-23-2020
+##################################################################################################
 
 #### Loading packages ########################################################################
 #These must be already installed on your system 
-library(lubridate)# date time manipulation
-library(ggplot2)  #plotting
-library(dplyr)    #data manipulation
-library(plyr)     #data manipulation
-library(plotly)   #interactive plotting
-library(cowplot)  #publication-ready plots
-library(devtools) #developer tools, simplifying tasks
+library(dplyr)      #data manipulation
+library(ggplot2)    #plotting
+library(plotly)     #interactive plotting
+library(cowplot)    #publication-ready plots
+library(devtools)   #developer tools, simplifying tasks
+library(lubridate)  # date time manipulation
 
 #### Setting working directorys #############################################################
 # Setting the source file location
 sfl <- dirname(rstudioapi::getActiveDocumentContext()$path)  # this is the source file location of R-SnowModel.R
-#sfl <- "~/Documents/R Scripts/SnowModel"                    # alternatitive manual process
 
-# Working directory for demo run of SnowModel
+# Working directory for demo runs of SnowModel
 # ** If you have these in the correct directory they should be good to run out of the box. **
-#wd <- paste(sfl,"snowmodel_test",sep="/")     # this file is the demo run of SnowModel
-wd <- paste(sfl,"Singel Cell Test",sep="/")     # this file is a single cell test at Hogg Pass SNOTEL, https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=526
+wd <- paste(sfl,"snowmodel_demo",sep="/")     # this file is the demo run of SnowModel
+#wd <- paste(sfl,"Singel_Cell_Test",sep="/")     # this file is a single cell test at Hogg Pass SNOTEL, https://wcc.sc.egov.usda.gov/nwcc/site?sitenum=526
 
 # My curent working directory of the MRB SnowModel
 #wd <- "~/Desktop/MRB Project/SnowModel/Model Runs/McKenzie V6" # singel cell version for the MRB Project
 #wd <- "~/Desktop/McKenzie V7" # singel cell version for the MRB Project
 
-
+# Setting the working directory to the version of SnowModel to be run.
 setwd(wd)
 
 
@@ -41,23 +42,24 @@ system("./snowmodel")
 
 
 #### Step 2: reading the GrADS file #####################################################
-# to run this file you will need a folder with R-Snowmodel.R, ctlfile.R, gridp.R, gridt.R, readgrads.R
-# you can either save these files to to the same location as R-Snowmodel or source them from the internet
+# To run this file you will need a folder with R-Snowmodel.R, ctlfile.R, gridp.R, gridt.R, readgrads.R.
+# Theses functions were developed by Marcos Longo and are available on his GitHub (mpaiao).
+# These files can eith be saved to same location as R-Snowmodel or source them from the GitHub.
 
 # this code sources the files from a saved version in the same location as R-Snowmodel (I use this if I am not conected to the internet)
 #setwd(sfl)   # This Directory is the folder with R-Snowmodel
-#source("ctlfile.R")                          # https://github.com/mpaiao/ED2/blob/master/R-utils/readctl.r  
-#source("gridp.R")                            # https://github.com/mpaiao/ED2/blob/master/R-utils/gridp.r
-#source("gridt.R")                            # https://github.com/mpaiao/ED2/blob/master/R-utils/gridt.r
-#source("readgrads.R")                        # https://github.com/mpaiao/ED2/blob/master/R-utils/readgrads.r
+#source("ctlfile.R")          # https://github.com/mpaiao/ED2/blob/master/R-utils/readctl.r  
+#source("gridp.R")            # https://github.com/mpaiao/ED2/blob/master/R-utils/gridp.r
+#source("gridt.R")            # https://github.com/mpaiao/ED2/blob/master/R-utils/gridt.r
+#source("readgrads.R")        # https://github.com/mpaiao/ED2/blob/master/R-utils/readgrads.r
 
-# this code sources the files from mpaiao's GitHub page
+# this code sources the files from Marcos Longo's GitHub page
 source_url("https://raw.githubusercontent.com/mpaiao/ED2/master/R-utils/readctl.r")
 source_url("https://raw.githubusercontent.com/mpaiao/ED2/master/R-utils/gridp.r")
 source_url("https://raw.githubusercontent.com/mpaiao/ED2/master/R-utils/gridt.r")
 source_url("https://raw.githubusercontent.com/mpaiao/ED2/master/R-utils/readgrads.r")
 
-
+# 
 setwd(paste(wd,"outputs",sep="/"))
 
 # ** This code below allows you to read any of the varables that are saved by your SnowModel run. **
@@ -134,7 +136,7 @@ ggplotly(ggplot()+
 
 
 
-#### Step 3b: selecting the data of intrest (MRB Grid) ##################################
-
-#mk.modled.swe <- swed$swed[,1,1013,653]
+#### Step 3b: selecting the data of intrest (MRB Slice) ##################################
+# swe slice of April 1
+April.1 <- swed$swed[183,1,,]
 
