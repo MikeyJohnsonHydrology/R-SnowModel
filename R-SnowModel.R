@@ -4,7 +4,7 @@
 ### This script was developed to make a full SnowModel run and plot results.
 ###
 ### Written by: Mikey Johnson, University of Nevada Reno, < mikeyj@nevada.unr.edu >
-### last edited 01-23-2020
+### last edited 01-24-2020
 ##################################################################################################
 
 #### Loading packages ########################################################################
