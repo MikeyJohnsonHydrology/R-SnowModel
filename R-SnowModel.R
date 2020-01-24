@@ -4,11 +4,11 @@
 ### This script was developed to make a full SnowModel run and plot results.
 ###
 ### Written by: Mikey Johnson, University of Nevada Reno, < mikeyj@nevada.unr.edu >
-### last eddited 01-23-2020
+### last edited 01-23-2020
 ##################################################################################################
 
 #### Loading packages ########################################################################
-#These must be already installed on your system 
+#These must be already installed on your system
 library(dplyr)      # data manipulation
 library(ggplot2)    # plotting
 library(plotly)     # interactive plotting
@@ -50,7 +50,7 @@ system("./snowmodel")
 
 # this code sources the files from a saved version in the same location as R-Snowmodel (I use this if I am not conected to the internet)
 #setwd(sfl)   # This Directory is the folder with R-Snowmodel
-#source("ctlfile.R")          # https://github.com/mpaiao/ED2/blob/master/R-utils/readctl.r  
+#source("ctlfile.R")          # https://github.com/mpaiao/ED2/blob/master/R-utils/readctl.r
 #source("gridp.R")            # https://github.com/mpaiao/ED2/blob/master/R-utils/gridp.r
 #source("gridt.R")            # https://github.com/mpaiao/ED2/blob/master/R-utils/gridt.r
 #source("readgrads.R")        # https://github.com/mpaiao/ED2/blob/master/R-utils/readgrads.r
@@ -61,7 +61,7 @@ source_url("https://raw.githubusercontent.com/mpaiao/ED2/master/R-utils/gridp.r"
 source_url("https://raw.githubusercontent.com/mpaiao/ED2/master/R-utils/gridt.r")
 source_url("https://raw.githubusercontent.com/mpaiao/ED2/master/R-utils/readgrads.r")
 
-# 
+#
 setwd(paste(wd,"outputs",sep="/"))
 
 # ** This code below allows you to read any of the varables that are saved by your SnowModel run. **
@@ -141,4 +141,3 @@ ggplotly(ggplot()+
 #### Step 3b: selecting the data of intrest (MRB Slice) ##################################
 # swe slice of April 1 day 183 assuming the model run starts on October 1st
 April.1 <- swed$swed[183,1,,]
-
