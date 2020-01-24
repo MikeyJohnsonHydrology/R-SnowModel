@@ -1,8 +1,0 @@
-pgf77 -g -ftrap=common -o ../snowmodel snowmodel_main.f snowtran_code.f micromet_code.f readparam_code.f preprocess_code.f enbal_code.f snowpack_code.f outputs_user.f dataassim_user.f
-
-#f77 -g -ftrap=common -o ../snowmodel snowmodel_main.f snowtran_code.f micromet_code.f readparam_code.f preprocess_code.f enbal_code.f snowpack_code.f outputs_user.f precipfactor_user.f
-
-#g77 -O3 -I$path1 -Wuninitialized -Wsurprising -Wunused -o ../snowmodel $path1$filename1 $path1$filename2 $path1$filename3 $path1$filename4 $path1$filename5 $path1$filename6 $path1$filename7 $path2$filename8 $path2$filename9
-
-rm snowmodel_main.o snowtran_code.o micromet_code.o readparam_code.o preprocess_code.o enbal_code.o snowpack_code.o outputs_user.o precipfactor_user.o
-
