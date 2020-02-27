@@ -1,6 +1,6 @@
 # R-SnowModel
 
-##### This R script compiles, runs, and translates the fortran code SNOWMODEL (Liston and Elder, 2006)
+##### This repository has a series of scripts that I use to run SNOWMODEL (Liston and Elder, 2006)
 
 ##### A Distributed Snow-Evolution Modeling System (SnowModel) https://doi.org/10.1175/JHM548.1
 
@@ -14,6 +14,11 @@
 ##### 1) "snowmodel_test", this is Dr. Glen Liston's code for a demo run of SnowModel_16_05_09
 ##### 2) "Singel_Cell_Test", this uses SnowModel_16_05_09 and simulates snow at the Hogg Pass SNOTEL for water year 2003 & 2004
 
-##### This is my early draft of the readme file, I plan to expand more on the steps to run the program.
+##### I have added three scritps that are usefull for SnowModel runs.
+##### 1) R-SnowModel.r : a script to compile, run, and read SnowModel
+##### 2) SNOTEL_SnowModel_Comparison.r : a script to compare SnowModel resutls to SNOTEL data
+##### 3) R-SnowModel-Calibration.r : a script to change SnowModel parameters and compare to SNOTEL data (This is code is still in development)
 
-##### -Mikey, January 23, 2020
+##### This is my early draft of the readme file (I plan to add more).
+
+##### -Mikey, Feburary 27, 2020
