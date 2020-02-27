@@ -1,6 +1,6 @@
 # R-SnowModel
 
-#### This repository has a series of scripts that I use to run SNOWMODEL (Liston and Elder, 2006)
+### This repository has a series of scripts that I use to run SNOWMODEL (Liston and Elder, 2006)
 
 ##### A Distributed Snow-Evolution Modeling System (SnowModel) https://doi.org/10.1175/JHM548.1
 
