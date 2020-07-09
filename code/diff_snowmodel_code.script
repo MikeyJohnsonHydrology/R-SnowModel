@@ -1,0 +1,94 @@
+
+# Locations of the two versions of the fortran code.
+
+path1=./
+#path2=/data1/working/snowmodel/sm/code/
+path2=/data1/working/snowmodel/development/interpolation/snowmodel/code/
+
+# Locations of the two snowmodel.par files.
+
+path3=../
+#path4=/data1/working/snowmodel/sm/
+path4=/data1/working/snowmodel/development/interpolation/snowmodel/
+
+filename1=enbal_code.f
+filename2=micromet_code.f
+filename3=preprocess_code.f
+filename4=readparam_code.f
+filename5=snowmodel_main.f
+filename6=snowpack_code.f
+filename7=snowtran_code.f
+filename8=outputs_user.f
+filename9=dataassim_user.f
+filename10=snowmodel_vars.inc
+filename11=snowmodel.inc
+filename12=compile_snowmodel.script
+filename13=snowmodel.par
+
+echo
+echo =============================================================
+echo IN $filename1
+diff $path1$filename1 $path2$filename1
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename2
+diff $path1$filename2 $path2$filename2
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename3
+diff $path1$filename3 $path2$filename3
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename4
+diff $path1$filename4 $path2$filename4
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename5
+diff $path1$filename5 $path2$filename5
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename6
+diff $path1$filename6 $path2$filename6
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename7
+diff $path1$filename7 $path2$filename7
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename8
+diff $path1$filename8 $path2$filename8
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename9
+diff $path1$filename9 $path2$filename9
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename10
+diff $path1$filename10 $path2$filename10
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename11
+diff $path1$filename11 $path2$filename11
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename12
+diff $path1$filename12 $path2$filename12
+echo =============================================================
+echo
+echo =============================================================
+echo IN $filename13
+diff $path3$filename13 $path4$filename13
+echo =============================================================
+echo
+

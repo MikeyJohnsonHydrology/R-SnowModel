@@ -1,0 +1,324 @@
+Mikey's Code Chang List, mikey's_sm_code
+Created: April 1, 2020
+Last Edited: May 20, 2020
+
+Project notes: Based of the SnowModel 2020-03-28
+
+This version of SnowModel has been modified to include a gridded
+canopy cover fraction cc_frac.
+
+Data for cc_frac comes from the NLCD, NLCD 2016 USFS Tree Canopy Cover (CONUS)
+
+This variable is used in two location
+
+1) micromet_code.f: to replace gap fraction (gap_frac = 1 - cc_frac)
+2) snowpack_code.f: to include to canopy interception in the HP interception
+
+--------------------------------------------------------------------------------
+1) declaration of cc_gap variable
+(snowmodel_vars.inc, line 31)
+      real cc_frac(nx_max, ny_max)
+
+--------------------------------------------------------------------------------
+2) Making a new fortran file (Mikey's_SM_Subroutines.f) to read the cc_gap data
+
+--------------------------------------------------------------------------------
+3) Adding (Mikey's_SM_Subroutines.f) to the (compile_snowmodel.script)
+(compile_snowmodel.script, line 14 & 21)
+
+filename12=Mikey's_SM_Subroutines.f
+
+gfortran -O3 -mcmodel=medium -I$path -o ../snowmodel $path$filename1 $path$filename2 $path$filename3 $path$filename4 $path$filename5 $path$filename6 $path$filename7 $path$filename8 $path$filename9 $path$filename10 $path$filename12
+
+--------------------------------------------------------------------------------
+4) Calling Canopy_Cover_Data_Import into SnowModel
+(snowmodel_main.f, 121 to 123)
+c Importing the canopy cover dataset (MJ)
+        CALL Canopy_Cover_Data_Import(nx,ny,nx_max,ny_max,
+     &  cc_frac)
+
+--------------------------------------------------------------------------------
+5) Adding cc_frac to snowpack_code.f, working out to in from snowmodel_main.f ->
+Snowpack_code.f -> SNOWPACK_CORE -> CANOPY_SNOW -> canopy interception equation
+
+i) adding cc_frac,deltax,vegsnowd_xy to Call_SNOWPACK_CODE in snowmodel_main.f
+(snowmodel_main.f, line 218)
+     &        cc_frac,deltax,vegsnowd_xy)
+
+ii) adding cc_frac to snowpack_code.f call list and declared variable
+(snowpack_code.f, line 21)
+     &  cc_frac,deltax,vegsnowd_xy)
+
+(snowpack_code.f, line 97-99)
+      real cc_frac(nx_max,ny_max)
+      real vegsnowd_xy(nx_max,ny_max)
+      real deltax
+
+Note: do j and do i loop is applyed before this step
+iii) adding cc_frac to SNOWPACK_CORE
+(snowpack_code.f, line 156)
+     &      diam_z,flux_z,cc_frac(i,j),vegsnowd_xy(i,j),deltax)
+
+(snowpack_code.f, line 235)
+     &  diam_layer,flux_layer,cc_frac,vegsnowd_xy,deltax)
+
+(snowpack_code.f, line 268)
+     &  cc_frac,vegsnowd_xy,deltax
+
+iv) adding cc_frac to CANOPY_SNOW
+(snowpack_code.f, line 280)
+     &    sum_d_canopy_int,cc_frac,vegsnowd_xy,deltax)
+
+(snowpack_code.f, line 366)
+     &  sum_d_canopy_int,cc_frac,vegsnowd_xy,deltax)
+
+(snowpack_code.f, line 372-373)
+     &  sum_Qcs,albedo,sum_unload,sum_d_canopy_int,cc_frac,c_p,
+     &  vegsnowd_xy,deltax
+
+v) adding Mikey's improved code
+(snowpack_code.f, line 385-408)
+c Start M.Johnson
+c Maximum interception storage.
+c      xImax = 4.4 * forest_LAI  !orignal SnowModel
+c      xImax = 14.0 * forest_LAI !adjusted for Andreadis-Stork 35mm max swe intercepted
+
+      Lr = 1.5*(Tair-273.15)+5.5
+      if(Tair.gt.272.15)then
+        Lr = 4.0
+      endif
+      if(Tair.lt.270.15)then
+        Lr = 1.0
+      endif
+      xImax = Lr * 0.35 * forest_LAI !Andreadis-Stork max intercepted swe (mm)
+
+c Canopy leaf to ground ratio, c_p
+      c_p = min(cc_frac/(max(1-cc_frac*windspd*
+     &  max(vegsnowd_xy-snow_depth,0.001)
+     &  /0.8/deltax,0.000001)),1.0)
+
+c Change in canopy load due to snow precipitation during this time
+c   step.  Convert the canopy interception to mm.
+      canopy_int = 1000.0 * canopy_int
+      d_canopy_int = 0.678 * max(0.0,xImax - canopy_int)*
+     &  ( 1.0 - exp((c_p)*(- sprec)*1000.0/xImax))
+c End M.Johnson
+
+
+--------------------------------------------------------------------------------
+6) Adding cc_frac to replace gap_frac in microment_code.f (for SW radiation)
+Note: (1-cc_frac/100) = gap_frac
+
+i) adding cc_frac to CALL MICROMET_CODE in the snowmodel_main.f
+(microment_code.f, Line 159)
+     &        cloud_frac_grid,snowfall_frac,seaice_run,cc_frac)
+
+ii) adding cc_frac to the micromet_code.f
+(microment_code.f, line 24)
+     &  cloud_frac_grid,snowfall_frac,seaice_run,cc_frac)
+
+(microment_code.f, line 53)
+      real cc_frac(nx_max,ny_max)   ! cc_frac
+
+iii) adding cc_frac CALL SOLAR in micomet_code.f
+(microment_code.f, line 242)
+     &    xlon_grid,cloud_frac_grid, cc_frac)
+
+iv) adding cc_frac to SUBROUTINE SOLAR in micromet_code.f, replacing gap_frac
+in solar the equation.
+(microment_code.f, line 741)
+     &  xlon_grid,cloud_frac_grid,cc_frac)
+
+(microment_code.f, line 769)
+      real cc_frac(nx_max,ny_max)
+
+(microment_code.f, line 830 & 831)
+              trans_veg = (1-cc_frac(i,j)) * (1.0 - trans_veg) +
+     &                    trans_veg
+
+--------------------------------------------------------------------------------
+7) Adding cc_frac to forest_frac to adjust the longwave radiation
+
+i) adding cc_frac to CALL LONGWAVE
+(snowmodel_main.f, line 262)
+     &    calc_subcanopy_met,cloud_frac_factor,cc_frac)
+
+ii) adding to subroutine longwave
+(micromet_code.f, line 612)
+     &  calc_subcanopy_met,cloud_frac_factor, cc_frac)
+
+(micromet_code.f, line 626)
+      real cc_frac(nx_max,ny_max)
+
+(micromet_code.f, line 720 & 721)
+                forest_frac = cc_frac(i,j) *
+     &            min(1.0,0.55 + 0.29 * log(forest_LAI(nveg)))
+
+(micromet_code.f, line 626) Added +4 to temperature Boon 2009
+     &          (Stef_Boltz * (Tair_grid(i,j)+4)**4) * forest_frac   ! Tair + 4 (Boon et al., 2009)
+
+
+
+--------------------------------------------------------------------------------
+8) Adding canopy waterbalance error (snowpack_code.f, 550-564)
+
+c      if (abs(w_balance).gt.1.0e-5) then
+c        print*,'water imbalance found, iter =',iter,' ',w_balance
+
+c Seprate print statments for each element, mj
+
+c        print*,'swe_depth_old =', swe_depth_old
+c        print*,'swe_depth =', swe_depth
+c        print*,'prec =', prec
+c        print*,'runoff =', runoff
+c        print*,'glacier_melt =', glacier_melt
+c        print*,'swesublim =', swesublim
+c        print*,'canopy_int_old =', canopy_int_old
+c        print*,'canopy_int =', canopy_int
+c        print*,'Qcs =', Qcs
+
+c        print*,'Canopy Balance (forest) = ', canopy_int_old
+c     &                   - canopy_int + Qcs
+      end if
+
+--------------------------------------------------------------------------------
+9) Mohammad Safeeq's lapse rate from Matt Coopers Paper (Cooper et al., 2016)
+Safeeq's values calculated from CIG data
+
+(micromet_code.f, Changed: Lines 2410 - 2411, changed user lapse rate)
+      data lapse_rate_user /5.5,5.8,6.1,6.2,6.3,6.4,
+     &                      6.7,6.5,6.2,5.9,5.7,5.5/
+
+(snowmodel.par, Changed: Line 567, turned flag on)
+      lapse_rate_user_flag = 1
+
+--------------------------------------------------------------------------------
+10) Run the model with a multilayer snowpack
+
+(snowmodel.par, Changed: Line 852 & 880)
+      multilayer_snowpack = 1
+
+      max_layers = 6
+
+(snowmodel.inc, Changed: Line 42, nz_max >= 1+max_layers)
+      parameter (nz_max=7)
+
+--------------------------------------------------------------------------------
+11) Scailing forest wind reducting by cc_frac
+
+note: cc_frac was added to Micromet in a previous step
+
+i) adding cc_frac to subroutine wind
+(micromet_code.f, line 223)
+     &    curve_len_scale,seaice_run,cc_frac)
+
+(micromet_code.f, line 1055)
+     &  curve_len_scale,seaice_run,cc_frac)
+
+(micromet_code.f, line 1115)
+      real cc_frac(nx_max,ny_max)
+
+
+ii) adding cc_frac to subroutine topo_mod_winds
+
+(micromet_code.f, line 1218)
+     &  vegsnowd_xy,curve_len_scale,deltax,deltay,cc_frac)
+
+(micromet_code.f, line 1519)
+     &  vegsnowd_xy,curve_len_scale,deltax,deltay,cc_frac)
+
+(micromet_code.f, line 1544) Note: do i,j loop after this
+      real cc_frac(nx_max,ny_max)
+
+(micromet_code.f, line 1638) Note: commented out for now looking for better documunation
+c              canopy_windwt = canopy_windwt * cc_frac(i,j)
+
+--------------------------------------------------------------------------------
+12) Adding (Gleason & Nolin 2016) Albedo decay
+
+11a) Adding three subroutines to mikey_sm_subroutines.f
+     - SNOW_ALBEDO_OPEN
+     - SNOW_ALBEDO_FOREST
+     - SNOW_ALBEDO_BURNED_FOREST
+
+11b) --- snowmodel.main.f ---
+(Line 182) added "sprec, dt" to the CALL ENBAL_CODE
+     &        gamma,KK,sprec,dt)
+
+11c) --- enbal_code.f ---
+(Line 11) added "sprec, dt" to SUBROUTINE ENBAL_CODE
+     &  gamma,KK,sprec,dt)
+
+(Line 26) added "real sprec(nx_max,ny_max),dt" to in ENBAL_CODE
+      real sprec(nx_max,ny_max),dt
+
+(Line 79) added "sprec(i,j),dt" to CALL ENBAL_CORE
+     &      count_Tsfc_not_converged,sprec(i,j),dt)
+
+(Line 113) added "sprec,dt" to SUBROUTINE ENBAL_CORE
+     &    count_Tsfc_not_converged,sprec,dt)
+
+(Line 146) added "sprec,dt" to the list of real variables in ENBAL_CORE
+     &  albedo_glacier,count_Tsfc_not_converged,sprec,dt
+
+(Line 161) added "sprec,QM,dt" to CALL GET_SFC
+     &    albedo_glacier,sprec,QM,dt)
+
+(Line 673) added "sprec,QM,dt" to SUBROUTINE GET_SFC
+     &  albedo_glacier,sprec,QM,dt)
+
+(Line 679) added "sprec,QM,dt" to the list of real variables in GET_SFC
+     &  albedo_glacier,sprec,QM,dt
+
+(Line 680-726) commented out the old code
+
+(Line 800-846 ) added code to call ALBEDO_OPEN and ALBEDO_FOREST and assing a time dependednt albedo
+c   This code is mikey's adapted code to call the (Gleason Nolan, 2016)
+c   abedo decay function. It will call SNOW_ALBEDO_OPEN and
+c   SNOW_ALBEDO_FOREST from mikey_sm_subroutines.f. The workflow is
+c   similar to the current working SnowModel code (lines 680-726)
+
+c Define albedo_veg
+
+      albedo_veg = 0.15
+
+c Define the albedo and roughness length.
+      if (snow_d.gt.0.0) then
+c Snow.
+        z_0 = snow_z0
+
+        if (vegtype.le.5.0) then
+            CALL SNOW_ALBEDO_FOREST(sprec,Qm,albedo,dt)
+        else
+            CALL SNOW_ALBEDO_OPEN(sprec,Qm,albedo,dt)
+        endif
+
+c For thin melting snowcovers (less than 15 cm), reduce the albedo
+c   to account for the observed enhanced melting processes.
+c         scf = min(1.0,snow_d/0.15)
+c         albedo = scf * albedo + (1.0 - scf) * albedo_veg
+
+c No snow.
+      else
+        if (vegtype.eq.20.0) then
+c Glacier or permanant snow.
+          z_0 = snow_z0
+          albedo = albedo_glacier
+        else
+c Land.
+          z_0 = veg_z0_tmp
+          if (vegtype.le.5.0) then
+            z_0 = 0.2
+          elseif (vegtype.le.11.0) then
+            z_0 = 0.04
+          else
+            z_0 = 0.02
+          endif
+          albedo = albedo_veg
+        endif
+      endif
+c      print*,albedo,sprec,snow_d   ! Test to print Albedo
+      return
+      end
+
+--------------------------------------------------------------------------------
